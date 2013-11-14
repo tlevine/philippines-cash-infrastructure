@@ -44,9 +44,9 @@ def parse_results(province, html_result_string):
     >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).ix[4])
     ['Fr. S. Urios University', 'Butuan City', 'Butuan City', '8600']
     '''
-    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name')[0]
+    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False)[0]
     df.columns = [u'#', u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
-
+    del(df['#'])
     return df
 
 def test():
