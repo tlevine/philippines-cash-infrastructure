@@ -49,7 +49,7 @@ def test():
 def main():
     import os
     import datetime
-    download_dir = os.path.join('data',datetime.date.today().isoformat())
+    download_dir = os.path.join('data', 'postoffices',datetime.date.today().isoformat())
     try:
         os.makedirs(download_dir)
     except OSError:
