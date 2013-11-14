@@ -108,7 +108,7 @@ def geocode(df):
 def test():
     import doctest
     # doctest.testmod()
-    doctest.run_docstring_examples(break_up_address, globals())
+    doctest.run_docstring_examples(building_from_address, globals())
 
 def main():
     import os
@@ -139,14 +139,28 @@ def main():
     return df
 
 import re
-def break_up_address(combined_address, municipality):
+def building_from_address(combined_address, municipality, province):
     '''
-    >>> break_up_address('Max Suniel St., Carmen, CDeO', 'Metro Cagayan De Oro')
-    ('Max Suniel St.', 'Carmen')
+    >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Carmen', 'Metro Cagayan De Oro')
+    Max Suniel St.
 
-    >>> break_up_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Surigao del Sur')
-    ('Municipal Bldg.', 'Lanuza')
+    >>> building_from_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Lanuza', 'Surigao del Sur')
+    Municipal Bldg.
+
+,Cotabato City,"Bonifacio St., Cotabato Citu",9600,Maguindanao
+    >>> building_from_address("Poblacion Isulan, Sultan Kudarat", "Isulan", "Sultan Kudarat")
+    None
+
+    >>> building_from_address("Bonifacio St., Cotabato Citu", 'Cotabato City', 'Maguindanao')
+    Bonifacio St.
+
+    >>> building_from_address("Municipal Bldg.,Boston, Davao Oriental","Boston","Davao Oriental")
+    Municipal Bldg.
+
+    >>> building_from_address("Municipal Hall Bldg., Malalag, Davao del Sur", "Malalag","Davao Del Sur")
+    Municipal Hall Bldg.
     '''
+
     aliases = {
         'CDeO': 'Metro Cagayan De Oro',
     }
@@ -165,9 +179,9 @@ def break_up_address(combined_address, municipality):
     elif len(address_parts) > 2:
         raise NotImplementedError("I don't know how to handle such a big address.")
     else:
-        building, town = address_parts
+        building = address_parts
 
-    return building, town
+    return building
 
 if __name__ == '__main__':
     test()
