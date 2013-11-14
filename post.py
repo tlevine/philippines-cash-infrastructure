@@ -151,6 +151,9 @@ def building_from_address(combined_address, municipality, province):
 
     >>> building_from_address('Olutanga, Zambo. Sibugay', 'Olutanga', 'Zamboanga Sibugay')
 
+    >>> building_from_address('Gaisano Mall, Quirante 2, Tagum City', 'Tagum City', 'Davao Del Norte / Compostela Valley')
+    'Gaisano Mall'
+
     '''
     if combined_address == '':
         return None
@@ -168,9 +171,9 @@ def building_from_address(combined_address, municipality, province):
         return broken_up[0]
     else:
         warnings.warn("""
-Couldn't handle this call:
+Guessing on this call:
 
-    building_from_address(%s, %s, %s)
+    building_from_address('%s', '%s', '%s')
 
 %s
 %s
