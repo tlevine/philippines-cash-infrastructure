@@ -141,13 +141,13 @@ def main():
 import re
 def break_up_address(combined_address, municipality):
     '''
-    >>> break_up_address("Max Suniel St., Carmen, CDeO", "Metro Cagayan De Oro")
-    ("Max Suniel St.", "Carmen")
+    >>> break_up_address('Max Suniel St., Carmen, CDeO', 'Metro Cagayan De Oro')
+    ('Max Suniel St.', 'Carmen')
 
-    >>> break_up_address("Municipal Bldg.,Lanuza, Surigao del Sur", "Surigao del Sur")
-    ("Municipal Bldg.","Lanuza")
+    >>> break_up_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Surigao del Sur')
+    ('Municipal Bldg.', 'Lanuza')
     '''
-    address_parts = re.split(r'\. ?', combined_address)
+    address_parts = re.split(r', ?', combined_address)
     if address_parts[-1] == municipality:
         address_parts = address_parts[:-1]
 
