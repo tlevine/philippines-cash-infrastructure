@@ -179,7 +179,7 @@ def building_from_address(combined_address, municipality, province):
         return None
 
 def _maybe_remove(full_address, thing):
-    if thing in full_address[-1] or (thing in ALIASES and ALIASES[thing] in full_address[-1]):
+    if thing.lower() in full_address[-1].lower() or (thing in ALIASES and ALIASES[thing].lower() in full_address[-1].lower()):
         return full_address[:-1]
     else:
         return full_address
