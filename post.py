@@ -6,8 +6,6 @@ import numpy
 import lxml.html
 import requests
 import pandas
-# from omgeo import Geocoder
-from pygeocoder import Geocoder
 
 ALIASES = {
     'Metro Cagayan De Oro': 'CDeO',
@@ -75,42 +73,6 @@ def parse_results(province, html_result_string):
         df[column] = df[column].astype(unicode)
     return df
 
-def geocode(df):
-    g = Geocoder()
-
-    column_sets = {
-        'Municipality': ['Longitude (Geocoded Municipality)', 'Latitude (Geocoded Municipality)'],
-        'Address':      ['Longitude (Geocoded Address)', 'Latitude (Geocoded Address)'],
-    }
-
-    def f(row, column):
-        '''
-        column must be one of "Municipality" and "Address"
-        '''
-        na = (numpy.nan, numpy.nan)
-        if numpy.isnan(row[column]):
-            return row
-
-        result = g.geocode(row[column] + ', Philippines')
-
-        # Validation could be improved; we could check the post code.
-        # http://code.xster.net/pygeocoder/wiki/Home#!geocoding
-        if result.count == 0 or result.country != 'Philippines' or result.postal_code != row['Zip Code']:
-            row[column_sets[column]] = na
-        else:
-            row[column_sets[column]] = result.coordinates
-
-        row['Geocode ' + column] = result
-        return row
-
-    for col in reduce(lambda a,b: a+b, column_sets.values()) + ['Geocode Address', 'Geocode Municipality']:
-        df[col] = numpy.nan
-
-    for i in df.index:
-        for column in ['Municipality','Address']:
-            df.ix[i] = f(df.ix[i], column)
-    return df
-
 def test():
     import doctest
     # doctest.testmod()
@@ -173,7 +135,6 @@ def building_from_address(combined_address, municipality, province):
     >>> building_from_address("Mintal Proper, Tugbok District, Davao City",'Davao City', 'Metro Davao')
     'Mintal Proper'
     '''
-
 
     full_address = re.split(r', ?', combined_address)
     no_province = _maybe_remove(full_address, province)
