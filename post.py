@@ -138,6 +138,5 @@ def main():
     return df
 
 if __name__ == '__main__':
-    # res = download_results(u'Agusan Del Norte')
     test()
-    df = main()
+    main()
