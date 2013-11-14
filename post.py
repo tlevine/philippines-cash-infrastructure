@@ -9,6 +9,10 @@ import pandas
 # from omgeo import Geocoder
 from pygeocoder import Geocoder
 
+ALIASES = {
+    'Metro Cagayan De Oro': 'CDeO',
+}
+
 def download_parse_provinces():
     '''
     Download the list of provinces from
@@ -161,27 +165,23 @@ def building_from_address(combined_address, municipality, province):
     Municipal Hall Bldg.
     '''
 
-    aliases = {
-        'CDeO': 'Metro Cagayan De Oro',
-    }
 
-    address_parts = re.split(r', ?', combined_address)
+    full_address = re.split(r', ?', combined_address)
+    no_province = _maybe_remove(full_address, province)
+    no_municipality_neither = _maybe_remove(no_province, municipality)
 
-    if address_parts[-1] == municipality or \
-        aliases.get(address_parts[-1]) == municipality:
-
-        address_parts = address_parts[:-1]
-
-    if len(address_parts) == 0:
-        building = town = ''
-    elif len(address_parts) == 1:
-        raise NotImplementedError("I don't know how to handle an address with one comma.")
-    elif len(address_parts) > 2:
-        raise NotImplementedError("I don't know how to handle such a big address.")
+    if len(no_municipality_neither) == 0:
+        return None
+    elif len(no_municipality_neither) == 1:
+        return no_municipality_neither[0]
     else:
-        building = address_parts
+        raise NotImplementedError("I couldn't handle this address:\n" + str(full_address))
 
-    return building
+def _maybe_remove(full_address, thing):
+    if thing in full_address[-1] or (thing in ALIASES and ALIASES[thing] in full_address[-1]):
+        return full_address[-1]
+    else:
+        return full_address
 
 if __name__ == '__main__':
     test()
