@@ -137,6 +137,16 @@ def main():
     df.to_csv(os.path.join(download_dir, 'postoffices.csv'), encoding = 'utf-8', index = False)
     return df
 
+def break_up_address(combined_address, municipality):
+    '''
+    >>> break_up_address("Max Suniel St., Carmen, CDeO", "Metro Cagayan De Oro")
+    ("Max Suniel St.", "Carmen")
+
+    >>> break_up_address("Municipal Bldg.,Lanuza, Surigao del Sur", "Surigao del Sur")
+    ("Municipal Bldg.","Lanuza")
+    '''
+    return building, town
+
 if __name__ == '__main__':
     test()
     main()
