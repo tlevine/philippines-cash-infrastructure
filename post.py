@@ -176,7 +176,7 @@ Couldn't handle this call:
 %s
 %s
 """ % (combined_address, municipality, province, full_address, no_province, no_municipality_neither))
-        return None
+        return broken_up[0]
 
 def _maybe_remove(full_address, thing):
     if len(full_address) > 0 and thing.lower() in full_address[-1].lower() or (thing in ALIASES and ALIASES[thing].lower() in full_address[-1].lower()):
