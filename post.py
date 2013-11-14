@@ -21,8 +21,8 @@ def download_parse_provinces():
 
 def download_results(province):
     '''
-    >>> download_results(u'Agusan Del Norte').split('\n')[0]
-    <h2>Result(s)</h2>
+    # >>> download_results(u'Agusan Del Norte').split('\n')[0]
+    # <h2>Result(s)</h2>
     '''
     r = requests.post(
         'https://www.phlpost.gov.ph/postoffice-province.php',
@@ -35,16 +35,23 @@ def parse_results(province, html_result_string):
     '''
     HTML string -> [dict]
 
-    >>> parse_results(open('Fixture: Agusan Del Norte.html').read()).shape
+    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).shape
+    (6, 4)
+
+    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).columns
+    [u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
+
+    >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).ix[4])
+    ['Fr. S. Urios University', 'Butuan City', 'Butuan City', '8600']
     '''
-    df = pandas.read_html(html_result_string)
-    df['province'] = province
+    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name')[0]
+    df.columns = [u'#', u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
+
     return df
 
 def test():
-    print list(sorted(parse_results(open('Fixture: Agusan Del Norte.html').read())[0].items()))
-    # import doctest
-    # doctest.testmod()
+    import doctest
+    doctest.testmod()
 
 def main():
     import os
@@ -75,4 +82,6 @@ def main():
     return big_df
 
 if __name__ == '__main__':
-    df = main()
+    # df = parse_results('Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read())
+    # df = main()
+    test()
