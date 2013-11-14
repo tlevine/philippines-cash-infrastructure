@@ -114,22 +114,22 @@ def main():
 def building_from_address(combined_address, municipality, province):
     '''
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Carmen', 'Metro Cagayan De Oro')
-    'Max Suniel St'
+    'Max Suniel St.'
 
     >>> building_from_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Lanuza', 'Surigao del Sur')
-    'Municipal Bldg'
+    'Municipal Bldg.'
 
 ,Cotabato City,"Bonifacio St., Cotabato Citu",9600,Maguindanao
     >>> building_from_address("Poblacion Isulan, Sultan Kudarat", "Isulan", "Sultan Kudarat")
 
     >>> building_from_address("Bonifacio St., Cotabato Citu", 'Cotabato City', 'Maguindanao')
-    'Bonifacio St'
+    'Bonifacio St.'
 
     >>> building_from_address("Municipal Bldg.,Boston, Davao Oriental","Boston","Davao Oriental")
-    'Municipal Bldg'
+    'Municipal Bldg.'
 
     >>> building_from_address("Municipal Hall Bldg., Malalag, Davao del Sur", "Malalag","Davao Del Sur")
-    'Municipal Hall Bldg'
+    'Municipal Hall Bldg.'
 
     >>> building_from_address("Poblacion Kabacan, Cotabato",'Kabacan', 'North Cotabato')
 
@@ -143,7 +143,7 @@ def building_from_address(combined_address, municipality, province):
     'Alicia'
     '''
 
-    full_address = re.split(r'\.,? ?', combined_address)
+    full_address = re.split(r'(\., ?|\. |, ?)', combined_address)[::2]
     no_province = _maybe_remove(full_address, province)
     no_municipality_neither = _maybe_remove(no_province, municipality)
     broken_up = _maybe_remove(no_municipality_neither, 'District')
