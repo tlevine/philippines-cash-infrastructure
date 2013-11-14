@@ -11,6 +11,7 @@ from pygeocoder import Geocoder
 
 ALIASES = {
     'Metro Cagayan De Oro': 'CDeO',
+    'Cotabato City': "Cotabato Citu",
 }
 
 def download_parse_provinces():
@@ -146,23 +147,22 @@ import re
 def building_from_address(combined_address, municipality, province):
     '''
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Carmen', 'Metro Cagayan De Oro')
-    Max Suniel St.
+    'Max Suniel St.'
 
     >>> building_from_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Lanuza', 'Surigao del Sur')
-    Municipal Bldg.
+    'Municipal Bldg.'
 
 ,Cotabato City,"Bonifacio St., Cotabato Citu",9600,Maguindanao
     >>> building_from_address("Poblacion Isulan, Sultan Kudarat", "Isulan", "Sultan Kudarat")
-    None
 
     >>> building_from_address("Bonifacio St., Cotabato Citu", 'Cotabato City', 'Maguindanao')
-    Bonifacio St.
+    'Bonifacio St.'
 
     >>> building_from_address("Municipal Bldg.,Boston, Davao Oriental","Boston","Davao Oriental")
-    Municipal Bldg.
+    'Municipal Bldg.'
 
     >>> building_from_address("Municipal Hall Bldg., Malalag, Davao del Sur", "Malalag","Davao Del Sur")
-    Municipal Hall Bldg.
+    'Municipal Hall Bldg.'
     '''
 
 
@@ -175,11 +175,12 @@ def building_from_address(combined_address, municipality, province):
     elif len(no_municipality_neither) == 1:
         return no_municipality_neither[0]
     else:
-        raise NotImplementedError("I couldn't handle this address:\n" + str(full_address))
+        # raise NotImplementedError("I couldn't handle this address:\n" + combined_address)
+        return None
 
 def _maybe_remove(full_address, thing):
     if thing in full_address[-1] or (thing in ALIASES and ALIASES[thing] in full_address[-1]):
-        return full_address[-1]
+        return full_address[:-1]
     else:
         return full_address
 
