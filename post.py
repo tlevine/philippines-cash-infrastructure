@@ -12,6 +12,7 @@ from pygeocoder import Geocoder
 ALIASES = {
     'Metro Cagayan De Oro': 'CDeO',
     'Cotabato City': "Cotabato Citu",
+    'North Cotabato': 'Cotabato',
 }
 
 def download_parse_provinces():
