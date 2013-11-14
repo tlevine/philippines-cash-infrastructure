@@ -21,9 +21,10 @@ def download_parse_provinces():
 
 def download_results(province):
     '''
-    # >>> download_results(u'Agusan Del Norte').split('\n')[0]
-    # <h2>Result(s)</h2>
+    >>> len(lxml.html.parse(download_results(u'Agusan Del Norte')).xpath('//tr'))
+    7
     '''
+
     r = requests.post(
         'https://www.phlpost.gov.ph/postoffice-province.php',
         data = {u'id': province},
@@ -44,7 +45,7 @@ def parse_results(province, html_result_string):
     >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read().decode('utf-8')).ix[4])
     [u'Fr. S. Urios University', u'Butuan City', u'Butuan City', u'8600', u'Agusan Del Norte']
     '''
-    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False)[0]
+    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False, flavor = 'lxml')[0]
     df.columns = [u'#', u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
     del(df['#'])
     df['Province'] = province
@@ -80,11 +81,10 @@ def main():
             open(province_file, 'w').write(results[province])
 
     # Parse results
-    dfs = (parse_results(province, html_string) for province, html_string in results)
+    dfs = (parse_results(province, html_string) for province, html_string in results.items())
     big_df = reduce(lambda a,b: a.concat(b), dfs)
     return big_df
 
 if __name__ == '__main__':
-    # df = parse_results('Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read())
     # df = main()
     test()
