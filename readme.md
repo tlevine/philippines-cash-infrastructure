@@ -7,7 +7,9 @@ because those tend to be available in even rural areas.
 
 Run like so.
 
-    git submodule init
-    git submodule update
-    ./post.py
-    ls data/postoffices/*/postoffices.csv
+```sh
+git submodule init
+git submodule update
+./post.py
+ls data/postoffices/*/postoffices.csv
+```
