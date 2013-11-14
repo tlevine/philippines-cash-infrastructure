@@ -58,7 +58,7 @@ def parse_results(province, html_result_string):
     >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read().decode('utf-8')).ix[4])
     [u'Fr. S. Urios University', u'Butuan City', u'Butuan City', u'8600', u'Agusan Del Norte']
     '''
-    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False, flavor = 'lxml')[0]
+    df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False, flavor = 'bs4')[0]
     df.columns = [u'#', u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
     del(df['#'])
     df['Province'] = province
@@ -88,17 +88,15 @@ def main():
     for province in provinces:
         province_file = os.path.join(download_dir, province.replace('/','|') + u'.html')
         if os.path.exists(province_file):
-            results[province] = open(province_file).read()
+            results[province] = open(province_file).read().decode('utf-8')
         else:
             results[province] = download_results(province)
-            open(province_file, 'w').write(results[province])
+            open(province_file, 'w').write(results[province].encode('utf-8'))
 
     # Parse results
-    dfs = (parse_results(province, html_string) for province, html_string in results.items())
-    big_df = reduce(lambda a,b: a.concat(b), dfs)
-    return big_df
+    pandas.concat((parse_results(province, html_string) for province, html_string in results.items()))
 
 if __name__ == '__main__':
     # res = download_results(u'Agusan Del Norte')
-    # df = main()
-    test()
+    # test()
+    df = main()
