@@ -1,6 +1,8 @@
 #!/usr/bin/env python2
 import json
 from time import sleep
+import re
+import warnings
 
 import numpy
 import lxml.html
@@ -71,6 +73,8 @@ def parse_results(province, html_result_string):
     df['Province'] = province
     for column in df.columns:
         df[column] = df[column].astype(unicode)
+
+    df['Building'] = df.apply(lambda row: building_from_address(row['Address'],row['Municipality'],row['Province']), axis = 1)
     return df
 
 def test():
@@ -106,7 +110,6 @@ def main():
     df.to_csv(os.path.join(download_dir, 'postoffices.csv'), encoding = 'utf-8', index = False)
     return df
 
-import re
 def building_from_address(combined_address, municipality, province):
     '''
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Carmen', 'Metro Cagayan De Oro')
@@ -146,7 +149,8 @@ def building_from_address(combined_address, municipality, province):
     elif len(broken_up) == 1:
         return broken_up[0]
     else:
-        raise NotImplementedError("I couldn't handle this address.")
+        warnings.warn("Couldn't handle this address\n" + combined_address)
+        return None
 
 def _maybe_remove(full_address, thing):
     if len(full_address) > 0 and thing.lower() in full_address[-1].lower() or (thing in ALIASES and ALIASES[thing].lower() in full_address[-1].lower()):
@@ -155,5 +159,5 @@ def _maybe_remove(full_address, thing):
         return full_address
 
 if __name__ == '__main__':
-    test()
-    # main()
+    # test()
+    df = main()
