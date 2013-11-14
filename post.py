@@ -75,6 +75,7 @@ def parse_results(province, html_result_string):
     for column in df.columns:
         df[column] = df[column].astype(unicode)
 
+    print '----------', province, '--------------'
     df['Building'] = df.apply(lambda row: building_from_address(row['Address'],row['Municipality'],row['Province']), axis = 1)
     return df
 
@@ -141,6 +142,8 @@ def building_from_address(combined_address, municipality, province):
 
     >>> building_from_address('Alicia, Zambo. Sibugay', 'Zamboanga', 'Sibugay')
     'Alicia'
+
+    >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
     '''
 
     full_address = re.split(r'(\., ?|\. |, ?)', combined_address)[::2]
@@ -158,7 +161,8 @@ def building_from_address(combined_address, municipality, province):
 
         return b
     else:
-        warnings.warn("Couldn't handle this address\n" + combined_address)
+        args = (combined_address, municipality, province)
+        warnings.warn("Couldn't handle this call\n  %s\n  %s\n  %s" % args)
         return None
 
 def _maybe_remove(full_address, thing):
@@ -168,5 +172,5 @@ def _maybe_remove(full_address, thing):
         return full_address
 
 if __name__ == '__main__':
-    test()
-    # df = main()
+    # test()
+    df = main()
