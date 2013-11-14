@@ -148,7 +148,15 @@ def building_from_address(combined_address, municipality, province):
 
     >>> building_from_address('Lim Ket Kai Center P.O', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
     'Lim Ket Kai Center PO'
+
+    >>> building_from_address('', 'Lantawan', 'Basilan')
+
+    >>> building_from_address('Olutanga, Zambo. Sibugay', 'Olutanga', 'Zamboanga Sibugay')
+
     '''
+    if combined_address == '':
+        return None
+
     cleaned_combined_address = re.sub(r'P\.O\.?', 'PO', combined_address)
 
     full_address = re.split(r'(\., ?|\. |, ?)', cleaned_combined_address)[::2]
