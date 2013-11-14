@@ -1,5 +1,6 @@
 #!/usr/bin/env python2
 import json
+from time import sleep
 
 import lxml.html
 import requests
@@ -19,7 +20,7 @@ def download_parse_provinces():
     html = lxml.html.fromstring(r.text)
     return map(unicode, html.xpath('//select/descendant::option/@value'))
 
-def download_results(province, session = None):
+def download_results(province):
     '''
     Mimic this Javascript
 
@@ -35,33 +36,14 @@ def download_results(province, session = None):
           });
         });
 
-    Note the lack of url-encoding.
-
-    >>> len(lxml.html.parse(download_results(u'Agusan Del Norte')).xpath('//tr'))
-    7
+    >>> len(lxml.html.fromstring(download_results(u'Agusan Del Norte')).xpath('//tr')) > 0
+    True
     '''
-    if session == None:
-        session = requests.session()
-        session.get('https://www.phlpost.gov.ph/post-office-location.php')
 
-    headers = {
-        u'Accept-Encoding': u'gzip,deflate,sdch',
-        u'Accept-Language': u'en-US,en;q=0.8,fr;q=0.6,sv;q=0.4,zh;q=0.2,zh-CN;q=0.2,zh-TW;q=0.2',
-        u'Host': u'www.phlpost.gov.ph',
-        u'Origin': u'https://www.phlpost.gov.ph',
-        u'Referer': u'https://www.phlpost.gov.ph/post-office-location.php',
-        u'User-Agent': u'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.76 Safari/537.36',
-        u'X-Requested-With': u'XMLHttpRequest',
-    }
+    url = 'https://www.phlpost.gov.ph/postoffice-municipality.php'
+    r = requests.post(url, data = {u'id': province})
 
-    r = session.post(
-        'https://www.phlpost.gov.ph/postoffice-province.php',
-        data = u'id=' + province, headers = headers)
-
-    print r.request.headers
-    print r.request.body
-
-    return r #.text
+    return r.text
 
 def parse_results(province, html_result_string):
     '''
@@ -117,6 +99,6 @@ def main():
     return big_df
 
 if __name__ == '__main__':
-    res = download_results(u'Agusan Del Norte')
+    # res = download_results(u'Agusan Del Norte')
     # df = main()
-    # test()
+    test()
