@@ -13,7 +13,7 @@ ALIASES = {
     'Metro Cagayan De Oro': 'CDeO',
     'Cotabato City': "Cotabato Citu",
     'North Cotabato': 'Cotabato',
-    'Zamboanga': 'Zambo',
+    'Zamboanga Sibugay': 'Zambo. Sibugay',
 }
 
 def download_parse_provinces():
@@ -165,16 +165,17 @@ def building_from_address(combined_address, municipality, province):
     if len(broken_up) == 0:
         return None
     elif len(broken_up) == 1:
-        b = broken_up[0]
-
-        s = combined_address.split(b)
-        if len(s) > 1 and len(s[1]) > 0 and s[1][0] == '.':
-            b = b + '.'
-
-        return b
+        return broken_up[0]
     else:
-        args = (combined_address, municipality, province)
-        warnings.warn("Couldn't handle this call\n  %s\n  %s\n  %s" % args)
+        warnings.warn("""
+Couldn't handle this call:
+
+    building_from_address(%s, %s, %s)
+
+%s
+%s
+%s
+""" % (combined_address, municipality, province, full_address, no_province, no_municipality_neither))
         return None
 
 def _maybe_remove(full_address, thing):
