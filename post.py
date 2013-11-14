@@ -138,6 +138,7 @@ def main():
     df.to_csv(os.path.join(download_dir, 'postoffices.csv'), encoding = 'utf-8', index = False)
     return df
 
+import re
 def break_up_address(combined_address, municipality):
     '''
     >>> break_up_address("Max Suniel St., Carmen, CDeO", "Metro Cagayan De Oro")
@@ -146,8 +147,19 @@ def break_up_address(combined_address, municipality):
     >>> break_up_address("Municipal Bldg.,Lanuza, Surigao del Sur", "Surigao del Sur")
     ("Municipal Bldg.","Lanuza")
     '''
-    building = ''
-    town = ''
+    address_parts = re.split(r'\. ?', combined_address)
+    if address_parts[-1] == municipality:
+        address_parts = address_parts[:-1]
+
+    if len(address_parts) == 0:
+        building = town = ''
+    elif len(address_parts) == 1:
+        raise NotImplementedError("I don't know how to handle an address with one comma.")
+    elif len(address_parts) > 2:
+        raise NotImplementedError("I don't know how to handle such a big address.")
+    else:
+        building, town = address_parts
+
     return building, town
 
 if __name__ == '__main__':
