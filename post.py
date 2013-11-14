@@ -147,8 +147,15 @@ def break_up_address(combined_address, municipality):
     >>> break_up_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Surigao del Sur')
     ('Municipal Bldg.', 'Lanuza')
     '''
+    aliases = {
+        'CDeO': 'Metro Cagayan De Oro',
+    }
+
     address_parts = re.split(r', ?', combined_address)
-    if address_parts[-1] == municipality:
+
+    if address_parts[-1] == municipality or \
+        aliases.get(address_parts[-1]) == municipality:
+
         address_parts = address_parts[:-1]
 
     if len(address_parts) == 0:
