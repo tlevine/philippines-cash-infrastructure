@@ -163,6 +163,8 @@ def building_from_address(combined_address, municipality, province):
 
     >>> building_from_address("Municipal Hall Bldg., Malalag, Davao del Sur", "Malalag","Davao Del Sur")
     'Municipal Hall Bldg.'
+
+    >>> building_from_address("Poblacion Kabacan, Cotabato",'Kabacan', 'North Cotabato')
     '''
 
 
@@ -175,8 +177,7 @@ def building_from_address(combined_address, municipality, province):
     elif len(no_municipality_neither) == 1:
         return no_municipality_neither[0]
     else:
-        # raise NotImplementedError("I couldn't handle this address:\n" + combined_address)
-        return None
+        raise NotImplementedError("I couldn't handle this address.")
 
 def _maybe_remove(full_address, thing):
     if thing.lower() in full_address[-1].lower() or (thing in ALIASES and ALIASES[thing].lower() in full_address[-1].lower()):
