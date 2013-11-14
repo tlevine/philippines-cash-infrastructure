@@ -2,10 +2,12 @@
 import json
 from time import sleep
 
+import numpy
 import lxml.html
 import requests
 import pandas
-from omgeo import Geocoder
+# from omgeo import Geocoder
+from pygeocoder import Geocoder
 
 def download_parse_provinces():
     '''
@@ -69,8 +71,26 @@ def parse_results(province, html_result_string):
 
 def geocode(df):
     g = Geocoder()
-    df['Geocoded Municipality'] = (df['Municipality'] + ', Philippines').map(g.geocode)
-    df['Geocoded Address'] = (df['Address'] + ', Philippines').map(g.geocode)
+
+    def func(address):
+        na = (numpy.nan, numpy.nan)
+        result = g.geocode(address)
+
+        # Validation could be improved; we could check the post code.
+        # http://code.xster.net/pygeocoder/wiki/Home#!geocoding
+        if result.count == 0 or result.country != 'Philippines':
+            return na
+        else:
+            return result.coordinates
+
+    municipality = ['Longitude (Geocoded Municipality)', 'Latitude (Geocoded Municipality)']
+    address      = ['Longitude (Geocoded Address)', 'Latitude (Geocoded Address)']
+
+    for col in municipality + address:
+        df[col] = 0.0
+
+    df[municipality] = (df['Municipality'] + ', Philippines').map(func)
+    df[address] = (df['Address'] + ', Philippines').map(func)
     return df
 
 def test():
