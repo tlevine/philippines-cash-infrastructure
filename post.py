@@ -107,7 +107,8 @@ def geocode(df):
 
 def test():
     import doctest
-    doctest.testmod()
+    # doctest.testmod()
+    doctest.run_docstring_examples(break_up_address, globals())
 
 def main():
     import os
@@ -145,8 +146,10 @@ def break_up_address(combined_address, municipality):
     >>> break_up_address("Municipal Bldg.,Lanuza, Surigao del Sur", "Surigao del Sur")
     ("Municipal Bldg.","Lanuza")
     '''
+    building = ''
+    town = ''
     return building, town
 
 if __name__ == '__main__':
     test()
-    main()
+    # main()
