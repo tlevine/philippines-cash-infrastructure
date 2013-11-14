@@ -134,14 +134,12 @@ def building_from_address(combined_address, municipality, province):
 
     >>> building_from_address("Poblacion Kabacan, Cotabato",'Kabacan', 'North Cotabato')
 
-    >>> building_from_address("Ipil, Zambo. Sibugay", "Zamboanga", "Sibugay")
-    'Ipil'
+    >>> building_from_address("Ipil, Zambo. Sibugay", 'Ipil', "Zamboanga Sibugay")
 
     >>> building_from_address("Mintal Proper, Tugbok District, Davao City",'Davao City', 'Metro Davao')
     'Mintal Proper'
 
-    >>> building_from_address('Alicia, Zambo. Sibugay', 'Zamboanga', 'Sibugay')
-    'Alicia'
+    >>> building_from_address('Alicia, Zambo. Sibugay', 'Alicia', 'Zamboanga Sibugay')
 
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
     'Max Suniel St.'
@@ -159,7 +157,7 @@ def building_from_address(combined_address, municipality, province):
 
     cleaned_combined_address = re.sub(r'P\.O\.?', 'PO', combined_address)
 
-    full_address = re.split(r'(\., ?|\. |, ?)', cleaned_combined_address)[::2]
+    full_address = re.split(r', ?', cleaned_combined_address)
     no_province = _maybe_remove(full_address, province)
     no_municipality_neither = _maybe_remove(no_province, municipality)
     broken_up = _maybe_remove(no_municipality_neither, 'District')
