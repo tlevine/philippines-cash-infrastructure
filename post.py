@@ -35,18 +35,21 @@ def parse_results(province, html_result_string):
     '''
     HTML string -> [dict]
 
-    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).shape
-    (6, 4)
+    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read().decode('utf-8')).shape
+    (6, 5)
 
-    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).columns
-    [u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
+    >>> parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read().decode('utf-8')).columns
+    Index([u'Post Office Name', u'Municipality', u'Address', u'Zip Code', u'Province'], dtype=object)
 
-    >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read()).ix[4])
-    ['Fr. S. Urios University', 'Butuan City', 'Butuan City', '8600']
+    >>> list(parse_results(u'Agusan Del Norte', open('Fixture: Agusan Del Norte.html').read().decode('utf-8')).ix[4])
+    [u'Fr. S. Urios University', u'Butuan City', u'Butuan City', u'8600', u'Agusan Del Norte']
     '''
     df = pandas.read_html(html_result_string, header = 0, match = 'Post Office Name', infer_types = False)[0]
     df.columns = [u'#', u'Post Office Name', u'Municipality', u'Address', u'Zip Code']
     del(df['#'])
+    df['Province'] = province
+    for column in df.columns:
+        df[column] = df[column].astype(unicode)
     return df
 
 def test():
