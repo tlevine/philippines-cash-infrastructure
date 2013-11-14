@@ -94,7 +94,10 @@ def main():
             open(province_file, 'w').write(results[province].encode('utf-8'))
 
     # Parse results
-    pandas.concat((parse_results(province, html_string) for province, html_string in results.items()))
+    for province, html_string in results.items():
+        print province
+        print parse_results(province, html_string)
+    # pandas.concat((parse_results(province, html_string) for province, html_string in results.items()))
 
 if __name__ == '__main__':
     # res = download_results(u'Agusan Del Norte')
