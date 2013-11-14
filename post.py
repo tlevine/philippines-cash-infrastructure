@@ -151,7 +151,12 @@ def building_from_address(combined_address, municipality, province):
     if len(broken_up) == 0:
         return None
     elif len(broken_up) == 1:
-        return broken_up[0]
+        b = broken_up[0]
+
+        if combined_address.split(b)[1][0] == '.':
+            b = b + '.'
+
+        return b
     else:
         warnings.warn("Couldn't handle this address\n" + combined_address)
         return None
