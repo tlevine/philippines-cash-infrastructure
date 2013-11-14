@@ -72,25 +72,37 @@ def parse_results(province, html_result_string):
 def geocode(df):
     g = Geocoder()
 
-    def func(address):
+    column_sets = {
+        'Municipality': ['Longitude (Geocoded Municipality)', 'Latitude (Geocoded Municipality)'],
+        'Address':      ['Longitude (Geocoded Address)', 'Latitude (Geocoded Address)'],
+    }
+
+    def f(row, column):
+        '''
+        column must be one of "Municipality" and "Address"
+        '''
         na = (numpy.nan, numpy.nan)
-        result = g.geocode(address)
+        if numpy.isnan(row[column]):
+            return row
+
+        result = g.geocode(row[column] + ', Philippines')
 
         # Validation could be improved; we could check the post code.
         # http://code.xster.net/pygeocoder/wiki/Home#!geocoding
-        if result.count == 0 or result.country != 'Philippines':
-            return na
+        if result.count == 0 or result.country != 'Philippines' or result.postal_code != row['Zip Code']:
+            row[column_sets[column]] = na
         else:
-            return result.coordinates
+            row[column_sets[column]] = result.coordinates
 
-    municipality = ['Longitude (Geocoded Municipality)', 'Latitude (Geocoded Municipality)']
-    address      = ['Longitude (Geocoded Address)', 'Latitude (Geocoded Address)']
+        row['Geocode ' + column] = result
+        return row
 
-    for col in municipality + address:
-        df[col] = 0.0
+    for col in reduce(lambda a,b: a+b, column_sets.values()) + ['Geocode Address', 'Geocode Municipality']:
+        df[col] = numpy.nan
 
-    df[municipality] = (df['Municipality'] + ', Philippines').map(func)
-    df[address] = (df['Address'] + ', Philippines').map(func)
+    for i in df.index:
+        for column in ['Municipality','Address']:
+            df.ix[i] = f(df.ix[i], column)
     return df
 
 def test():
@@ -127,5 +139,5 @@ def main():
 
 if __name__ == '__main__':
     # res = download_results(u'Agusan Del Norte')
-    # test()
+    test()
     df = main()
