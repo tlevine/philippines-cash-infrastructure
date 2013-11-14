@@ -147,10 +147,11 @@ def building_from_address(combined_address, municipality, province):
     'Max Suniel St.'
 
     >>> building_from_address('Lim Ket Kai Center P.O', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
-    'Lim Ket Kai Center P.O'
+    'Lim Ket Kai Center PO'
     '''
+    cleaned_combined_address = re.sub(r'P\.O\.?', 'PO', combined_address)
 
-    full_address = re.split(r'(\., ?|\. |, ?)', combined_address)[::2]
+    full_address = re.split(r'(\., ?|\. |, ?)', cleaned_combined_address)[::2]
     no_province = _maybe_remove(full_address, province)
     no_municipality_neither = _maybe_remove(no_province, municipality)
     broken_up = _maybe_remove(no_municipality_neither, 'District')
@@ -160,7 +161,8 @@ def building_from_address(combined_address, municipality, province):
     elif len(broken_up) == 1:
         b = broken_up[0]
 
-        if combined_address.split(b)[1][0] == '.':
+        s = combined_address.split(b)
+        if len(s) > 1 and len(s[1]) > 0 and s[1][0] == '.':
             b = b + '.'
 
         return b
