@@ -108,7 +108,7 @@ def main():
             open(province_file, 'w').write(results[province].encode('utf-8'))
 
     # Parse results
-    df = pandas.concat((parse_results(province, html_string) for province, html_string in results.items()))
+    df = pandas.concat((parse_results(province, html_string) for province, html_string in results.items()), ignore_index = True)
     df.to_csv(os.path.join(download_dir, 'postoffices.csv'), encoding = 'utf-8', index = False)
     return df
 
@@ -144,6 +144,10 @@ def building_from_address(combined_address, municipality, province):
     'Alicia'
 
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
+    'Max Suniel St.'
+
+    >>> building_from_address('Lim Ket Kai Center P.O', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
+    'Lim Ket Kai Center P.O'
     '''
 
     full_address = re.split(r'(\., ?|\. |, ?)', combined_address)[::2]
@@ -172,5 +176,5 @@ def _maybe_remove(full_address, thing):
         return full_address
 
 if __name__ == '__main__':
-    # test()
-    df = main()
+    test()
+    # df = main()
