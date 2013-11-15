@@ -187,6 +187,12 @@ def _maybe_remove(full_address, thing):
     else:
         return full_address
 
+def barangays_from_address():
+    '''
+    >>> barangays_from_address('Brgy. Talomo, infront of Talomo Police Station, Ulas, Davao City', 'Davao City', 'Metro Davao')
+    'Talomo'
+    '''
+
 if __name__ == '__main__':
     test()
-    # df = main()
+    df = main()
