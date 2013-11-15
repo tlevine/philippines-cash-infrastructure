@@ -13,3 +13,9 @@ git submodule update
 ./post.py
 ls data/postoffices/*/postoffices.csv
 ```
+
+> hey tom, you'll notice we have some administrative units underneath
+> municipality. these are barangays. the problem is that I can't geocode
+> these guys based on muni because there are some repeating muni names -- see
+> Davao city. Hence the need for a breakout. Think you can get teh barangays
+> (adm4)?
