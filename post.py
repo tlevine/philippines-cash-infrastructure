@@ -114,49 +114,54 @@ def main():
 
 def building_from_address(combined_address, municipality, province):
     '''
-    >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Carmen', 'Metro Cagayan De Oro')
-    'Max Suniel St.'
-
     >>> building_from_address('Municipal Bldg.,Lanuza, Surigao del Sur', 'Lanuza', 'Surigao del Sur')
-    'Municipal Bldg.'
+    ('Municipal Bldg.', None)
 
 ,Cotabato City,"Bonifacio St., Cotabato Citu",9600,Maguindanao
     >>> building_from_address("Poblacion Isulan, Sultan Kudarat", "Isulan", "Sultan Kudarat")
+    (None, None)
 
     >>> building_from_address("Bonifacio St., Cotabato Citu", 'Cotabato City', 'Maguindanao')
-    'Bonifacio St.'
+    ('Bonifacio St.', None)
 
     >>> building_from_address("Municipal Bldg.,Boston, Davao Oriental","Boston","Davao Oriental")
-    'Municipal Bldg.'
+    ('Municipal Bldg.', None)
 
     >>> building_from_address("Municipal Hall Bldg., Malalag, Davao del Sur", "Malalag","Davao Del Sur")
-    'Municipal Hall Bldg.'
+    ('Municipal Hall Bldg.', None)
 
     >>> building_from_address("Poblacion Kabacan, Cotabato",'Kabacan', 'North Cotabato')
+    (None, None)
 
     >>> building_from_address("Ipil, Zambo. Sibugay", 'Ipil', "Zamboanga Sibugay")
+    (None, None)
 
     >>> building_from_address("Mintal Proper, Tugbok District, Davao City",'Davao City', 'Metro Davao')
-    'Mintal Proper'
+    ('Mintal Proper', None)
 
     >>> building_from_address('Alicia, Zambo. Sibugay', 'Alicia', 'Zamboanga Sibugay')
+    (None, None)
 
     >>> building_from_address('Max Suniel St., Carmen, CDeO', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
-    'Max Suniel St.'
+    ('Max Suniel St.', 'Carmen')
 
     >>> building_from_address('Lim Ket Kai Center P.O', 'Cagayan de Oro City', 'Metro Cagayan De Oro')
-    'Lim Ket Kai Center PO'
+    ('Lim Ket Kai Center PO', None)
 
     >>> building_from_address('', 'Lantawan', 'Basilan')
+    (None, None)
 
     >>> building_from_address('Olutanga, Zambo. Sibugay', 'Olutanga', 'Zamboanga Sibugay')
+    (None, None)
 
     >>> building_from_address('Gaisano Mall, Quirante 2, Tagum City', 'Tagum City', 'Davao Del Norte / Compostela Valley')
-    'Gaisano Mall'
+    ('Gaisano Mall', 'Quirante 2')
 
+    >>> building_from_address('Brgy. Talomo, infront of Talomo Police Station, Ulas, Davao City', 'Davao City', 'Metro Davao')
+    ('infront of Talomo Police Station', 'Talomo')
     '''
     if combined_address == '':
-        return None
+        return (None, None)
 
     cleaned_combined_address = re.sub(r'P\.O\.?', 'PO', combined_address)
 
@@ -166,9 +171,11 @@ def building_from_address(combined_address, municipality, province):
     broken_up = _maybe_remove(no_municipality_neither, 'District')
 
     if len(broken_up) == 0:
-        return None
+        return (None, None)
     elif len(broken_up) == 1:
-        return broken_up[0]
+        return (broken_up[0], None)
+    elif len(broken_up) == 2:
+        return tuple(broken_up)
     else:
         warnings.warn("""
 Guessing on this call:
@@ -179,7 +186,7 @@ Guessing on this call:
 %s
 %s
 """ % (combined_address, municipality, province, full_address, no_province, no_municipality_neither))
-        return broken_up[0]
+        return tuple(broken_up[:2])
 
 def _maybe_remove(full_address, thing):
     if len(full_address) > 0 and thing.lower() in full_address[-1].lower() or (thing in ALIASES and ALIASES[thing].lower() in full_address[-1].lower()):
@@ -187,12 +194,6 @@ def _maybe_remove(full_address, thing):
     else:
         return full_address
 
-def barangays_from_address():
-    '''
-    >>> barangays_from_address('Brgy. Talomo, infront of Talomo Police Station, Ulas, Davao City', 'Davao City', 'Metro Davao')
-    'Talomo'
-    '''
-
 if __name__ == '__main__':
     test()
-    df = main()
+    # df = main()
