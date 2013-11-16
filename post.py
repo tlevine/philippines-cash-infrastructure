@@ -196,4 +196,4 @@ def _maybe_remove(full_address, thing):
 
 if __name__ == '__main__':
     test()
-    # df = main()
+    df = main()
